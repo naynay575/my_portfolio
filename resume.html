@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nehal Aftab — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── TOKEN SYSTEM ───────────────────────────────────────────── */
+    :root {
+      --bg:        #0B0D11;
+      --surface:   #13161C;
+      --border:    #1E222B;
+      --text:      #E4E6EC;
+      --muted:     #6B7280;
+      --accent:    #7C9EF8;        /* periwinkle blue — chosen for tech + creative duality */
+      --accent2:   #B48EF5;        /* soft violet for secondary highlights */
+      --green:     #4ADE80;
+
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ──────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 4rem;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(11, 13, 17, 0.85);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ───────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Signature element: animated mesh gradient orb */
+    .hero-orb {
+      position: absolute;
+      top: -10%;
+      right: -5%;
+      width: 680px;
+      height: 680px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, rgba(124,158,248,0.18) 0%, rgba(180,142,245,0.10) 45%, transparent 70%);
+      filter: blur(60px);
+      animation: orb-drift 12s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes orb-drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(-40px, 40px) scale(1.06); }
+    }
+
+    .hero-content {
+      max-width: 760px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fade-up 0.7s var(--ease-out) 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fade-up 0.8s var(--ease-out) 0.4s forwards;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent2);
+    }
+
+    .hero-tagline {
+      margin-top: 1.5rem;
+      font-size: 1.125rem;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.65;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fade-up 0.8s var(--ease-out) 0.6s forwards;
+    }
+
+    .hero-cta-row {
+      margin-top: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fade-up 0.8s var(--ease-out) 0.8s forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #0B0D11;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.8rem 1.8rem;
+      border-radius: 6px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    .btn-ghost {
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+    .hero-status {
+      margin-top: 3.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0;
+      animation: fade-up 0.8s var(--ease-out) 1s forwards;
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 0 rgba(74,222,128,0.5);
+      animation: pulse-dot 2.4s ease infinite;
+    }
+    @keyframes pulse-dot {
+      0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+      70%  { box-shadow: 0 0 0 8px rgba(74,222,128,0); }
+      100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+    }
+    .status-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    @keyframes fade-up {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SECTION BASE ───────────────────────────────────────────── */
+    section {
+      padding: 7rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      max-width: 480px;
+      font-size: 0.975rem;
+      margin-bottom: 3.5rem;
+    }
+
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 4rem;
+    }
+
+    /* ── ABOUT ──────────────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .about-text p strong { color: var(--text); font-weight: 600; }
+
+    .about-facts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .fact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.25s;
+    }
+    .fact-card:hover { border-color: var(--accent); }
+
+    .fact-card .fact-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+    .fact-card .fact-key {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SKILLS ─────────────────────────────────────────────────── */
+    .skills-section { background: var(--surface); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .skill-group {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .skill-group:hover { border-color: var(--accent2); transform: translateY(-4px); }
+
+    .skill-group-title {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .skill-tag {
+      background: var(--border);
+      color: var(--text);
+      font-size: 0.8rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── PROJECTS ───────────────────────────────────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: default;
+    }
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    .project-icon {
+      width: 42px; height: 42px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(124,158,248,0.15), rgba(180,142,245,0.15));
+      border: 1px solid rgba(124,158,248,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .project-name {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .project-tech {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    /* ── EXPERIENCE ─────────────────────────────────────────────── */
+    .experience-section { background: var(--surface); }
+
+    .timeline {
+      position: relative;
+      max-width: 800px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      padding-left: 2.5rem;
+      padding-bottom: 3rem;
+      position: relative;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute;
+      left: -4px;
+      top: 8px;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+
+    .timeline-period {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-role {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-org {
+      font-size: 0.875rem;
+      color: var(--accent2);
+      font-weight: 500;
+      margin-bottom: 0.9rem;
+    }
+
+    .timeline-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    .timeline-bullets li {
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding-left: 1.1rem;
+      position: relative;
+    }
+    .timeline-bullets li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* ── CONTACT ────────────────────────────────────────────────── */
+    .contact-section {
+      text-align: center;
+    }
+
+    .contact-section .section-sub {
+      margin: 0 auto 3rem;
+    }
+
+    .contact-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1.4rem;
+      transition: color 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .contact-link:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .contact-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .contact-email-big {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+      color: var(--text);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 2.5rem;
+      transition: color 0.2s;
+    }
+    .contact-email-big:hover { color: var(--accent); }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    footer {
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+    footer span {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ── SCROLL REVEAL ──────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 2rem; }
+      section { padding: 5rem 2rem; }
+      hr.divider { margin: 0 2rem; }
+      footer { padding: 1.5rem 2rem; }
+
+      .hero { padding: 0 2rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .skills-grid { grid-template-columns: 1fr; }
+      .about-facts { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── REDUCE MOTION ──────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-orb { animation: none; }
+      .status-dot { animation: none; }
+      .hero-eyebrow, .hero-name, .hero-tagline, .hero-cta-row, .hero-status {
+        animation: none; opacity: 1; transform: none;
+      }
+      .reveal { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="main-nav">
+    <a href="#" class="nav-logo">nehal.aftab</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="home">
+    <div class="hero-orb"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">CS Student · FAST-NUCES · 2024–2028</p>
+      <h1 class="hero-name">Nehal<br><em>Aftab</em></h1>
+      <p class="hero-tagline">
+        Software developer and UI/UX enthusiast who builds things that are functional, thoughtful, and worth looking at.
+      </p>
+      <div class="hero-cta-row">
+        <a href="#projects" class="btn-primary">
+          View Projects
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+        <a href="#contact" class="btn-ghost">Get in touch</a>
+      </div>
+      <div class="hero-status">
+        <span class="status-dot"></span>
+        <span class="status-label">Open to internships — UI/UX · Dev · Design</span>
+      </div>
+    </div>
+  </header>
+
+  <hr class="divider" />
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">About</div>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <h2 class="section-title" style="margin-bottom:1.5rem;">Building at the intersection of logic and design.</h2>
+        <p>
+          I'm a <strong>Computer Science student at FAST-NUCES (Faisalabad)</strong> with a genuine interest in both the technical and visual sides of software. I don't just want to build things that work — I want them to feel right.
+        </p>
+        <p>
+          My work spans <strong>AI algorithm visualizers</strong>, games in assembly, and web development — grounded in solid OOP and data structures fundamentals. On the creative side, I currently lead social media strategy for the FAST Photography Society and serve as a <strong>Teaching Assistant</strong> for Expository Writing.
+        </p>
+        <p>
+          I'm actively looking for a <strong>UI/UX, graphic design, or software development internship</strong> where I can contribute meaningfully and grow fast.
+        </p>
+      </div>
+      <div class="about-facts">
+        <div class="fact-card reveal" style="transition-delay:0.1s">
+          <div class="fact-value">3.0+</div>
+          <div class="fact-key">Current CGPA</div>
+        </div>
+        <div class="fact-card reveal" style="transition-delay:0.15s">
+          <div class="fact-value">6</div>
+          <div class="fact-key">Projects Built</div>
+        </div>
+        <div class="fact-card reveal" style="transition-delay:0.2s">
+          <div class="fact-value">2024</div>
+          <div class="fact-key">Started University</div>
+        </div>
+        <div class="fact-card reveal" style="transition-delay:0.25s">
+          <div class="fact-value">2</div>
+          <div class="fact-key">Leadership Roles</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- SKILLS -->
+  <section id="skills" class="skills-section">
+    <div class="section-label">Skills</div>
+    <h2 class="section-title reveal">What I bring to the table.</h2>
+    <p class="section-sub reveal">Languages, tools, and concepts I've worked with hands-on.</p>
+
+    <div class="skills-grid">
+      <div class="skill-group reveal" style="transition-delay:0.05s">
+        <div class="skill-group-title">Languages</div>
+        <div class="skill-tags">
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">HTML5</span>
+          <span class="skill-tag">CSS3</span>
+          <span class="skill-tag">x86 Assembly</span>
+        </div>
+      </div>
+      <div class="skill-group reveal" style="transition-delay:0.1s">
+        <div class="skill-group-title">Concepts</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Data Structures</span>
+          <span class="skill-tag">Algorithms</span>
+          <span class="skill-tag">OOP</span>
+          <span class="skill-tag">AI / ML Basics</span>
+          <span class="skill-tag">Web Development</span>
+        </div>
+      </div>
+      <div class="skill-group reveal" style="transition-delay:0.15s">
+        <div class="skill-group-title">Design & Tools</div>
+        <div class="skill-tags">
+          <span class="skill-tag">UI/UX Fundamentals</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Adobe Suite</span>
+          <span class="skill-tag">Git & GitHub</span>
+          <span class="skill-tag">VS Code</span>
+          <span class="skill-tag">Visual Studio</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">Projects</div>
+    <h2 class="section-title reveal">Things I've built.</h2>
+    <p class="section-sub reveal">Personal and academic projects across languages, domains, and problem types.</p>
+
+    <div class="projects-grid">
+
+      <div class="project-card reveal" style="transition-delay:0.05s">
+        <div class="project-icon">🔍</div>
+        <div class="project-tech">Python · AI</div>
+        <div class="project-name">AI Search Algorithms Visualizer</div>
+        <div class="project-desc">Interactive tool demonstrating BFS, DFS, A*, and Greedy Best-First Search on grids — highlights path costs, visited nodes, and optimal paths in real time.</div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.1s">
+        <div class="project-icon">♟️</div>
+        <div class="project-tech">C++ · OOP</div>
+        <div class="project-name">Chess Game</div>
+        <div class="project-desc">Two-player console chess with full rule implementation including check/checkmate detection. Architected with OOP — Board, Piece, Player, and Move Validation classes.</div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.15s">
+        <div class="project-icon">🕹️</div>
+        <div class="project-tech">x86 Assembly</div>
+        <div class="project-name">Atari Breakout</div>
+        <div class="project-desc">Fully functional arcade game in low-level x86 assembly — game loop logic, collision detection, and hardware-level graphics rendering from scratch.</div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.2s">
+        <div class="project-icon">🧩</div>
+        <div class="project-tech">Python</div>
+        <div class="project-name">Sudoku Puzzle Game</div>
+        <div class="project-desc">Complete Sudoku game with a solver engine using backtracking and constraint propagation, input validation, and multiple difficulty levels.</div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.25s">
+        <div class="project-icon">🤖</div>
+        <div class="project-tech">Python · Minimax</div>
+        <div class="project-name">Tic-Tac-Toe with Unbeatable AI</div>
+        <div class="project-desc">Single-player game against an AI using the Minimax algorithm — finds optimal moves every turn. Includes a two-player local mode.</div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:0.3s">
+        <div class="project-icon">🌐</div>
+        <div class="project-tech">HTML · CSS · JavaScript</div>
+        <div class="project-name">Portfolio Website</div>
+        <div class="project-desc">Fully responsive personal portfolio featuring project showcases, an about section, and a contact form — designed with UI/UX fundamentals in mind.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="experience-section">
+    <div class="section-label">Experience</div>
+    <h2 class="section-title reveal">Where I've contributed.</h2>
+    <p class="section-sub reveal">Roles in teaching, leadership, and creative work at FAST-NUCES.</p>
+
+    <div class="timeline">
+
+      <div class="timeline-item reveal" style="transition-delay:0.05s">
+        <div class="timeline-dot"></div>
+        <div class="timeline-period">Jan 2026 – Present</div>
+        <div class="timeline-role">Teaching Assistant — Expository Writing</div>
+        <div class="timeline-org">FAST-NUCES, Chiniot Faisalabad Campus</div>
+        <ul class="timeline-bullets">
+          <li>Provide structured feedback on undergraduate written assignments, improving clarity, argumentation, and academic expression.</li>
+          <li>Conduct support sessions covering essay structure, thesis development, and citation practices.</li>
+          <li>Collaborate with course instructors to monitor student progress and ensure consistent learning outcomes.</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item reveal" style="transition-delay:0.1s">
+        <div class="timeline-dot"></div>
+        <div class="timeline-period">2025 – Present</div>
+        <div class="timeline-role">Social Media Co-Head</div>
+        <div class="timeline-org">FAST Photography Society, NUCES</div>
+        <ul class="timeline-bullets">
+          <li>Co-lead the society's social media presence — directing content strategy, maintaining brand voice, and growing audience engagement across platforms.</li>
+          <li>Manage content calendars; oversee editing and publishing for university events including Mosikaar music festival.</li>
+          <li>Curate and edit professional-quality photo galleries for university publications and digital channels.</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item reveal" style="transition-delay:0.15s">
+        <div class="timeline-dot"></div>
+        <div class="timeline-period">2024 – 2025</div>
+        <div class="timeline-role">Official Event Photographer</div>
+        <div class="timeline-org">FAST Photography Society, NUCES</div>
+        <ul class="timeline-bullets">
+          <li>Covered major university events as official photographer, producing visual documentation for institutional records and social media.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title reveal">Let's work together.</h2>
+    <p class="section-sub reveal">I'm open to internships in UI/UX, graphic design, and software development. Feel free to reach out.</p>
+
+    <a href="mailto:nehal.aftab05@gmail.com" class="contact-email-big reveal">nehal.aftab05@gmail.com</a>
+
+    <div class="contact-links reveal">
+      <a href="https://linkedin.com/in/nehal-aftab" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.91 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/naynay575" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3C5.37.3 0 5.67 0 12.3c0 5.3 3.44 9.8 8.2 11.38.6.12.83-.26.83-.57v-2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.83 1.23 1.83 1.23 1.06 1.82 2.8 1.3 3.47.99.1-.78.41-1.3.75-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.3-1.23 3.3-1.23.64 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .31.22.7.82.58C20.56 22.1 24 17.6 24 12.3 24 5.67 18.63.3 12 .3z"/></svg>
+        GitHub
+      </a>
+      <a href="tel:+923374003074" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.08-.9a2 2 0 0 1 2.1-.45c.9.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"/></svg>
+        +92-337-4003074
+      </a>
+      <a href="tel:+923374003074" class="contact-link" style="display:none" id="location-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Hafizabad, Pakistan
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 Nehal Aftab</span>
+    <span>nehal.aftab05@gmail.com</span>
+  </footer>
+
+  <script>
+    // ── NAV scroll effect
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 30);
+    }, { passive: true });
+
+    // ── Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+          observer.unobserve(el.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // ── Show location contact link
+    document.getElementById('location-link').style.display = 'inline-flex';
+  </script>
+</body>
+</html>
